@@ -26,6 +26,7 @@ public class subsets_ {
             result.add(new ArrayList<>(alist));
             return;
         }
+        
         alist.add(array[i]);
         subs(i+1, array , alist , result);
         alist.remove(alist.size()-1);
