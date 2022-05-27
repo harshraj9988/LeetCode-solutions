@@ -33,7 +33,11 @@
       boolean isBadVersion(int version); */
 
 
+
 public class first_Bad_Version {
+
+    // TODO: delete this line before running the code
+    public boolean isBadVersion(int a){ return false; }
 
     public int firstBadVersion(int n) {
         int start=1;
