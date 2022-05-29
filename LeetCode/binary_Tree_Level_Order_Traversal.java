@@ -31,13 +31,13 @@
     import java.util.*;
 
     // this class was given in the question
-   class TreeNode {
+   class Tree_Node {
       int val;
-      TreeNode left;
-      TreeNode right;
-      TreeNode() {}
-      TreeNode(int val) { this.val = val; }
-      TreeNode(int val, TreeNode left, TreeNode right) {
+      Tree_Node left;
+      Tree_Node right;
+      Tree_Node() {}
+      Tree_Node(int val) { this.val = val; }
+      Tree_Node(int val, Tree_Node left, Tree_Node right) {
           this.val = val;
           this.left = left;
           this.right = right;
@@ -47,9 +47,9 @@
   
  
 class Solution {
-    public List<List<Integer>> levelOrder(TreeNode root) {
+    public List<List<Integer>> levelOrder(Tree_Node root) {
         List<List<Integer>> finalList = new LinkedList<List<Integer>>();
-        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        Queue<Tree_Node> queue = new LinkedList<>();
         
         if(root == null) return finalList;
         

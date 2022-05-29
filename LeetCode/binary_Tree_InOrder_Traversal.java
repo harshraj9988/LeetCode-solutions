@@ -29,19 +29,19 @@
 
 import java.util.*;
 
-class TreeNode {
+class tree_Node {
     int val;
-    TreeNode left;
-    TreeNode right;
+    tree_Node left;
+    tree_Node right;
 
-    TreeNode() {
+    tree_Node() {
     }
 
-    TreeNode(int val) {
+    tree_Node(int val) {
         this.val = val;
     }
 
-    TreeNode(int val, TreeNode left, TreeNode right) {
+    tree_Node(int val, tree_Node left, tree_Node right) {
         this.val = val;
         this.left = left;
         this.right = right;
@@ -49,14 +49,14 @@ class TreeNode {
 }
 
 public class binary_Tree_InOrder_Traversal {
-    public List<Integer> inorderTraversal(TreeNode root) {
+    public List<Integer> inorderTraversal(tree_Node root) {
         List<Integer> finalList = new LinkedList<Integer>();
 
         if (root == null)
             return finalList;
 
-        Stack<TreeNode> stack = new Stack<>();
-        TreeNode trav = root;
+        Stack<tree_Node> stack = new Stack<>();
+        tree_Node trav = root;
 
         stack.push(trav);
         while (!stack.isEmpty()) {
