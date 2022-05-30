@@ -31,13 +31,13 @@
 
 import java.util.*;
 
- class TreeNode_ {
+ class TreeNode {
      int val;
-     TreeNode_ left;
-     TreeNode_ right;
-     TreeNode_() {}
-     TreeNode_(int val) { this.val = val; }
-     TreeNode_(int val, TreeNode_ left, TreeNode_ right) {
+     TreeNode left;
+     TreeNode right;
+     TreeNode() {}
+     TreeNode(int val) { this.val = val; }
+     TreeNode(int val, TreeNode left, TreeNode right) {
          this.val = val;
          this.left = left;
          this.right = right;
@@ -45,12 +45,12 @@ import java.util.*;
  }
 
 public class binary_Tree_PostOrder_Traversal_one_stack {
-    public List<Integer> postorderTraversal(TreeNode_ root) {
+    public List<Integer> postorderTraversal(TreeNode root) {
         List<Integer> finalList = new LinkedList<>();
         if(root == null) return finalList;
 
-        Stack<TreeNode_> st1 = new Stack<>();
-        Stack<TreeNode_> st2 = new Stack<>();
+        Stack<TreeNode> st1 = new Stack<>();
+        Stack<TreeNode> st2 = new Stack<>();
 
         st1.push(root);
 

@@ -31,8 +31,8 @@ import java.util.*;;
 
 class TreeNode {
     int val;
-    treeNode left;
-    treeNode right;
+    TreeNode left;
+    TreeNode right;
 
     TreeNode() {
     }
@@ -41,7 +41,7 @@ class TreeNode {
         this.val = val;
     }
 
-    TreeNode(int val, treeNode left, treeNode right) {
+    TreeNode(int val, TreeNode left, TreeNode right) {
         this.val = val;
         this.left = left;
         this.right = right;
@@ -49,13 +49,13 @@ class TreeNode {
 }
 
 public class binary_Tree_PreOrder_Traversal {
-    public List<Integer> preorderTraversal(treeNode root) {
+    public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> finalList = new LinkedList<Integer>();
 
         if (root == null)
             return finalList;
 
-        Stack<treeNode> stack = new Stack<>();
+        Stack<TreeNode> stack = new Stack<>();
 
         stack.push(root);
         while (!stack.isEmpty()) {
