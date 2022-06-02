@@ -74,9 +74,4 @@ public class minimum_Number_Of_Arrows_To_Burst_Ballons {
         return count;
     }
 
-    public static void main(String[] args) {
-        int[][] a ={{-2147483646,-2147483645},{2147483646,2147483647}};
-
-        System.out.println(new minimum_Number_Of_Arrows_To_Burst_Ballons().findMinArrowShots(a));
-    }
 }
