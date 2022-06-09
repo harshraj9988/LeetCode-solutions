@@ -1,4 +1,3 @@
-import java.util.Arrays;
 
 /**        Given a 2D integer array matrix, return the transpose of matrix.
 

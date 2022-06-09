@@ -1,6 +1,3 @@
-import java.util.List;
-import java.util.Stack;
-
 /**
     Given the head of a singly linked list, return true if it is a palindrome.
 
