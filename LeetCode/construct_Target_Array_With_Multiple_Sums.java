@@ -44,21 +44,18 @@ public class construct_Target_Array_With_Multiple_Sums {
         
         PriorityQueue<Integer> heap = addToPriorityQueue(target);
         
-        while(heap.peek()>1 ){
-            
+        while(heap.peek()!=1 ){   
             int num = heap.poll();
-            int newNum=0;
-            if((sum-num)==1) newNum =  1 ;
-            else if(sum - num>1) newNum = num % (sum - num);
-            else return false;
-            if(num<=newNum) return false;
-            if(newNum == 0) return false;
-            sum = sum - num + newNum;
-            heap.add(newNum); 
+            if((sum-num)==1) return true ;
             
+            int newNum = num % (sum - num);
+            sum = sum - num + newNum;
+            
+            if(num<=newNum || newNum == 0) return false;
+            
+            heap.add(newNum); 
         }
-        
-        return heap.peek()==1;
+        return true;
     }
     
     
