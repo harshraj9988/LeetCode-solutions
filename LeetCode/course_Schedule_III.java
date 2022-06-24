@@ -48,7 +48,12 @@ import java.util.PriorityQueue;
 public class course_Schedule_III {
     public int scheduleCourse(int[][] courses) {
         PriorityQueue<Integer> queue = new PriorityQueue<>(Collections.reverseOrder());
-        Arrays.sort(courses, Comparator.comparingInt(course -> course[1]));
+        Arrays.sort(courses, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] arg0, int[] arg1) {
+                return arg0[1]-arg1[1];
+            }
+        });
         int sum = 0;
         for (int i = 0; i < courses.length; i++) {
             queue.add(courses[i][0]);
