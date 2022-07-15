@@ -33,7 +33,7 @@ public class house_Robber{
 
   
     //memoization
-    private int memoization(int i, int[] nums, int[] dp){
+    private int memoization(int i, int[] nums, int[] dp){ // i == last index
         if(i<0) return 0;
         if(i==0) return nums[i];
 
