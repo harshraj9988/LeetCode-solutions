@@ -41,26 +41,73 @@ import java.util.List;
 
 public class triangle {
 
-    Integer[][] check;
+    public int minimumTotal(List<List<Integer>> triangle) {
+        return spaceOptimization(triangle);
+    }
 
-    private int solve(List<List<Integer>> triangle, int i, int j) {
-        if (check[i][j] != null)
-            return check[i][j];
+
+    private int solve(List<List<Integer>> triangle, int i, int j, Integer[][] dp) {
+        if (dp[i][j] != null)
+            return dp[i][j];
 
         int minPathLength = triangle.get(i).get(j);
         if (i < triangle.size() - 1) {
-            int currPathLeft = solve(triangle, i + 1, j);
-            int currPathRight = solve(triangle, i + 1, j + 1);
+            int currPathLeft = solve(triangle, i + 1, j, dp);
+            int currPathRight = solve(triangle, i + 1, j + 1, dp);
 
             minPathLength += (currPathLeft < currPathRight) ? currPathLeft : currPathRight;
         }
-        check[i][j] = minPathLength;
+        dp[i][j] = minPathLength;
         return minPathLength;
     }
 
-    public int minimumTotal(List<List<Integer>> triangle) {
-        check = new Integer[triangle.size()][triangle.size()];
-        return solve(triangle, 0, 0);
+    private int memoization(List<List<Integer>> triangle, int i, int j, int n, Integer[][] dp){
+        if(i==n-1) return triangle.get(i).get(j);
+
+        if(dp[i][j]!=null) return dp[i][j];
+        
+        int bottom = memoization(triangle, i+1, j, n, dp);
+        int bottomRight = memoization(triangle, i+1, j+1, n, dp);
+
+        return dp[i][j] = triangle.get(i).get(j)+Math.min(bottom, bottomRight);
     }
 
+    private int tabulation(List<List<Integer>> triangle){
+        int n = triangle.size();
+        Integer[][] dp = new Integer[n][n];
+        for (int i = n-1; i >= 0; i--) {
+            for (int j = 0; j <= i; j++) {
+                if(i==n-1){
+                    dp[i][j] = triangle.get(i).get(j);
+                }else{
+                    int bottom = dp[i+1][j];
+                    int bottomRight = dp[i+1][j+1];
+
+                    dp[i][j] = triangle.get(i).get(j) + Math.min(bottom, bottomRight);
+                }
+            }
+        }
+        return dp[0][0];
+    }
+
+    private int spaceOptimization(List<List<Integer>> triangle){
+        int n = triangle.size();
+        int[] so = new int[n];
+
+        for (int i = n-1; i >= 0; i--) {
+            int[] curr = new int[i+1];
+            for (int j = 0; j <= i; j++) {
+                if(i==n-1){
+                    curr[j] = triangle.get(i).get(j);
+                }else{
+                    int bottom = so[j];
+                    int bottomRight = so[j+1];
+
+                    curr[j] = triangle.get(i).get(j) + Math.min(bottom, bottomRight);
+                }
+            }
+            so = curr;
+        }
+        return so[0];
+    }
 }
