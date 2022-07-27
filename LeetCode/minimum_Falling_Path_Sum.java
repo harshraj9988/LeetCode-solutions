@@ -35,17 +35,17 @@ public class minimum_Falling_Path_Sum {
 	}
 
 	// n = matrix.length -1; i = matrix.length-1; j = 0..matrix.length-1;
-	private int solve(int[][] arr, int i, int j, int n) {
+	private int recursion(int[][] arr, int i, int j, int n) {
 		if (i == 0)
 			return arr[i][j];
 
 		int left = Integer.MAX_VALUE, right = Integer.MAX_VALUE;
 		if (j > 0) {
-			left = solve(arr, i - 1, j - 1, n);
+			left = recursion(arr, i - 1, j - 1, n);
 		}
-		int curr = solve(arr, i - 1, j, n);
+		int curr = recursion(arr, i - 1, j, n);
 		if (j < n) {
-			right = solve(arr, i - 1, j + 1, n);
+			right = recursion(arr, i - 1, j + 1, n);
 		}
 
 		int min = Math.min(left, Math.min(curr, right));
