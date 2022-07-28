@@ -36,31 +36,28 @@ public class partition_Equal_Subset_Sum {
 
         int[][] dp = new int[n + 1][k + 1];
 
-        return solve(nums, k, n - 1, dp);
+        return memoization(nums, k, n - 1, dp);
     }
 
-    private boolean solve(int[] nums, int k, int n, int[][] dp) {
+  
+    private boolean memoization(int[] nums, int k, int n, int[][] dp) {
         if (k == 0)
             return true;
-        int val = nums[n];
         if (n == 0) {
-            if (k == val)
+            if (nums[n] == k)
                 return true;
             else
                 return false;
         }
-        if (k < 0)
-            return false;
 
-        int prevCal = dp[n][k];
-        if (prevCal != 0)
-            return (prevCal == 2) ? true : false;
+        if (dp[n][k] != 0)
+            return (dp[n][k] == 2) ? true : false;
 
         boolean pick = false;
-        if (k >= val) {
-            pick = solve(nums, k - val, n - 1, dp);
+        if (k >= nums[n]) {
+            pick = memoization(nums, k - nums[n], n - 1, dp);
         }
-        boolean notPick = solve(nums, k, n - 1, dp);
+        boolean notPick = memoization(nums, k, n - 1, dp);
 
         boolean result = pick || notPick;
 
@@ -68,4 +65,54 @@ public class partition_Equal_Subset_Sum {
 
         return result;
     }
+
+    // boolean dp[n][k+1]
+    private boolean tabulation(int[] nums, int k, int n, boolean[][] dp) {
+        for (int i = 0; i <= n; i++) {
+            dp[i][0] = true;
+        }
+        if (nums[0] <= k) {
+            dp[0][nums[0]] = true;
+        }
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= k; j++) {
+                boolean pick = false;
+                if (nums[i] <= j) {
+                    pick = dp[i - 1][j - nums[i]];
+                }
+                boolean notPick = dp[i - 1][j];
+
+                dp[i][j] = pick || notPick;
+            }
+        }
+
+        return dp[n][k];
+    }
+
+    private boolean spaceOptimization(int[] nums, int k, int n, boolean[] so) {
+
+        if (nums[0] <= k) {
+            so[nums[0]] = true;
+        }
+        so[0] = true;
+
+        for (int i = 1; i <= n; i++) {
+            boolean[] curr = new boolean[k + 1];
+            curr[0] = true;
+            for (int j = 1; j <= k; j++) {
+                boolean pick = false;
+                if (nums[i] <= j) {
+                    pick = so[j - nums[i]];
+                }
+                boolean notPick = so[j];
+
+                curr[j] = pick || notPick;
+            }
+            so = curr;
+        }
+
+        return so[k];
+    }
+
 }
