@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * You are given an integer array prices where prices[i] is the price of a given stock on the ith day.
 
@@ -35,9 +37,12 @@ Constraints:
 public class best_Time_To_Buy_And_Sell_Stock_2 {
     public int maxProfit(int[] prices) {
         int n = prices.length;
-        int[] dp = new int[2];
-                
-        return spaceOptimization(prices, n, dp);
+        int[][] dp = new int[2][n];
+        for(int i=0; i<2; i++){
+            Arrays.fill(dp[i], -1);
+        }
+        
+        return memoization(prices, 0, n,  1, dp);
     }
     
     private int recursion(int[] prices, int i, int n, int buy){
@@ -69,7 +74,7 @@ public class best_Time_To_Buy_And_Sell_Stock_2 {
             );
         } else {
             return dp[buy][i] = Math.max(
-                (prices[i]+memoization(prices, i, n, 1, dp)),
+                (prices[i]+memoization(prices, i+1, n, 1, dp)),
                 memoization(prices, i+1, n, 0, dp)
                 );
         }
