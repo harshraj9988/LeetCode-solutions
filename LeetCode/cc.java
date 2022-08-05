@@ -17,8 +17,10 @@ public class cc {
     
 
     public static void main(String[] args) {
-       int n = 10;
-       System.out.println(new cc().maximumGroups(n));
+      int x = Integer.MAX_VALUE;
+      int y = Integer.MIN_VALUE;
+      System.out.println("max:"+(x+1));
+      System.out.println("min:"+y);
     }
 }
   
