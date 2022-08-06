@@ -18,6 +18,7 @@ Constraints:
 
 -100 <= num1, num2 <= 100
  */
+
 public class add_Two_Integers {
     public int sum(int num1, int num2) {
         int sum = num1 + num2;
