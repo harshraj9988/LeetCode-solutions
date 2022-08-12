@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Scanner;
 
 /**
  * Given two strings text1 and text2, return the length of their longest common
@@ -41,9 +42,9 @@ public class longest_Common_Subsequences {
         int n = text1.length();
         int m = text2.length();
 
-        int[] dp = new int[m];
+        int[][] dp = new int[n+1][m+1];
   
-        return spaceOptimization(text1.toCharArray(), text2.toCharArray(), n - 1, m - 1, dp);
+        return tabulation(text1.toCharArray(), text2.toCharArray(), n, m, dp);
     }
 
     //initialize the dp with -1
@@ -78,14 +79,14 @@ public class longest_Common_Subsequences {
 
     private int tabulation(char[] S1, char[] S2, int n, int m, int[][] dp){
        
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if(S1[i]==S2[j]) dp[i][j] = 1 + (((i>0)&&(j>0))?(dp[i-1][j-1]):0);
-                else dp[i][j] = Math.max((i>0)?dp[i-1][j]:0, (j>0)?dp[i][j-1]:0);
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if(S1[i-1]==S2[j-1]) dp[i][j] = 1 + dp[i-1][j-1];
+                else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
             }
         }
 
-        return dp[n-1][m-1];
+        return dp[n][m];
     }
 
     private int spaceOptimization(char[] S1, char[] S2, int n , int m, int[] prev ){
@@ -99,5 +100,31 @@ public class longest_Common_Subsequences {
             prev = curr;
         }
         return prev[m-1];
+    }
+
+    private void printLCS(int[][] dp, char[] s1, char[] s2, int i, int j){
+        StringBuilder sb = new StringBuilder();
+
+        while(i>0 && j>0){
+            if(s1[i-1]==s2[j-1]){
+                sb.append(s1[i-1]);
+                i--; j--;
+            }else if (dp[i-1][j]>dp[i][j-1]) {
+                i--;
+            }else {
+                j--;
+            }
+        }
+        System.out.println();
+        System.out.println(sb.reverse().toString());
+    }
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        String text1 = input.next();
+        String text2 = input.next();
+        int lcs = new longest_Common_Subsequences().longestCommonSubsequence(text1, text2);
+        System.out.println();
+        System.out.println(lcs);
     }
 }
