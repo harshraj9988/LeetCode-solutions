@@ -43,6 +43,7 @@ public class substring_With_Concatenation_Of_All_Words {
         Map<String, Integer> totWrdFreq = new HashMap<>();
         for (String word : words)
             totWrdFreq.put(word, totWrdFreq.getOrDefault(word, 0) + 1);
+         
 
         int left = 0;
         int right = totWrdsLen - 1;
@@ -51,9 +52,12 @@ public class substring_With_Concatenation_Of_All_Words {
             Map<String, Integer> wrdFreq = new HashMap<>();
             int currLeft = left;
             int currRight = currLeft + wrdLen - 1;
-            while (currLeft <= right) {
-                String temp = s.substring(currLeft, currRight+1); // TODO: currRight+1;
+            while (currRight <= right) {
+                String temp = s.substring(currLeft, currRight+1);
                 wrdFreq.put(temp, wrdFreq.getOrDefault(temp, 0) + 1);
+                currLeft+=wrdLen;
+                currRight+=wrdLen;
+                
             }
             if(totWrdFreq.equals(wrdFreq)) result.add(left);
             left++;
@@ -63,8 +67,4 @@ public class substring_With_Concatenation_Of_All_Words {
         return result;
     }
 
-    public static void main(String[] args) {
-        String a = "Helloworld";
-        System.out.println(a.substring(1, 4));
-    }
 }
