@@ -67,19 +67,15 @@ public class roman_To_Integer {
         map.put('M', 1000);
 
         int n = s.length();
-        char prev = '*';
+        int ahead = 0;
         for (int i = n - 1; i >= 0; i--) {
-            char x = s.charAt(i);
-            if (
-                    (x == 'I' && (prev == 'V' || prev == 'X')) ||
-                    (x == 'X' && (prev == 'L' || prev == 'C')) || 
-                    (x == 'C' && (prev == 'D' || prev == 'M'))
-            ) {
-                ans -= map.get(x);
+            int x = map.get(s.charAt(i));
+            if (x < ahead) {
+                ans -= x;
             } else {
-                ans += map.get(x);
+                ans += x;
             }
-            prev = x;
+            ahead = x;
         }
 
         return ans;
