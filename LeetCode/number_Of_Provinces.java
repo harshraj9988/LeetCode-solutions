@@ -44,25 +44,26 @@ import java.util.*;
 public class number_Of_Provinces {
     public int findCircleNum(int[][] isConnected) {
         int n = isConnected.length;
-        int[] vis = new int[n];
+        boolean[] vis = new boolean[n];
 
-        int count = 0;
-        for (int i = 0; i < n; i++) {
-            count += dfs(i, n, isConnected, vis);
-        }
-
-        return count;
-    }
-
-    private int dfs(int i, int n, int[][] adj, int[] vis) {
-        if (vis[i] != 0)
-            return 0;
-        vis[i] = 1;
-        for (int j = 0; j < n; j++) {
-            if (i != j && adj[i][j] == 1) {
-                dfs(j, n, adj, vis);
+        int provinces = 0;
+        for (int source = 0; source < n; source++) {
+            if (vis[source] == false) {
+                provinces++;
+                dfs(source, n, isConnected, vis);
             }
         }
-        return 1;
+
+        return provinces;
+    }
+
+    private void dfs(int source, int n, int[][] adj, boolean[] vis) {
+
+        vis[source] = true;
+        for (int dest = 0; dest < n; dest++) {
+            if (source != dest && adj[source][dest] == 1 && vis[dest] == false) {
+                dfs(dest, n, adj, vis);
+            }
+        }
     }
 }
