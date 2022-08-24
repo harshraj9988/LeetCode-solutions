@@ -9,6 +9,7 @@ public class cc {
             nums[i] = in.nextInt();
         }
         System.out.println(binarySearchApproach(nums));
+
     }
 
     private static int binarySearchApproach(int[] nums) {

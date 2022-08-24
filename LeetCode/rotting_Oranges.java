@@ -1,3 +1,4 @@
+
 /**
  * You are given an m x n grid where each cell can have one of three values:
 
@@ -34,10 +35,58 @@ n == grid[i].length
 1 <= m, n <= 10
 grid[i][j] is 0, 1, or 2.
  */
+
+import java.util.*;
+
 public class rotting_Oranges {
     public int orangesRotting(int[][] grid) {
-        
-        return 0;
+
+        int m = grid.length;
+        int n = grid[0].length;
+
+        int count = 0;
+
+        int[] del = new int[] { -1, 0, 1, 0, -1 };
+
+        while (rotNeighbourOranges(grid, del, m, n))
+            count++;
+
+        for (int[] oranges : grid) {
+            for (int orange : oranges) {
+                if (orange == 1)
+                    return -1;
+            }
+        }
+
+        return count;
     }
 
+    private boolean rotNeighbourOranges(int[][] oranges, int[] del, int rowOranges, int colOranges) {
+        boolean hasFreshOranges = false;
+
+        ArrayList<int[]> turnedRot = new ArrayList<>();
+
+        for (int i = 0; i < rowOranges; i++) {
+            for (int j = 0; j < colOranges; j++) {
+                if (oranges[i][j] != 2)
+                    continue;
+                for (int x = 0; x < 4; x++) {
+                    int dx = i + del[x];
+                    int dy = j + del[x + 1];
+                    if (dx >= 0 && dx < rowOranges &&
+                            dy >= 0 && dy < colOranges &&
+                            oranges[dx][dy] == 1) {
+                        hasFreshOranges = true;
+                        turnedRot.add(new int[] { dx, dy });
+                    }
+                }
+            }
+        }
+
+        for (int[] rottenOrange : turnedRot) {
+            oranges[rottenOrange[0]][rottenOrange[1]] = 2;
+        }
+
+        return hasFreshOranges;
+    }
 }
