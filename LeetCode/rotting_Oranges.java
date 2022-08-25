@@ -39,7 +39,7 @@ grid[i][j] is 0, 1, or 2.
 import java.util.*;
 
 public class rotting_Oranges {
-    public int orangesRotting(int[][] grid) {
+    public int _orangesRotting(int[][] grid) {
 
         int m = grid.length;
         int n = grid[0].length;
@@ -89,4 +89,54 @@ public class rotting_Oranges {
 
         return hasFreshOranges;
     }
+
+    public int orangesRotting(int[][] grid) {
+
+        int m = grid.length;
+        int n = grid[0].length;
+
+        int count = 0;
+
+        Queue<int[]> queue = new LinkedList<>();
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 2) {
+                    queue.offer(new int[]{i,j,0});
+                }
+            }
+        }
+
+        int[] del = new int[] { -1, 0, 1, 0, -1 };
+
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            while(size-- >0){
+                int[] orange = queue.poll();
+                count = Math.max(count, orange[2]);
+                for(int i=0; i<4; i++){
+                    int dx = orange[0]+del[i];
+                    int dy = orange[1]+del[i+1];
+                    if(
+                        dx >= 0 && dx < m &&
+                            dy >= 0 && dy < n &&
+                            grid[dx][dy] == 1
+                    ) {
+                        grid[dx][dy] = 2;
+                        queue.offer(new int[]{dx, dy, orange[2]+1});
+                    }
+                }
+            }
+        }
+
+        for (int[] oranges : grid) {
+            for (int orange : oranges) {
+                if (orange == 1)
+                    return -1;
+            }
+        }
+
+        return count;
+    }
+
 }
