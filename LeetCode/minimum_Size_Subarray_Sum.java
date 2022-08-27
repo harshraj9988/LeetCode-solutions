@@ -52,13 +52,6 @@ public class minimum_Size_Subarray_Sum {
             j++;
         }
 
-        j--;
-        while (sum >= k) {
-            len = Math.min(len, j - i + 1);
-            sum -= nums[i];
-            i++;
-        }
-
         if (len == Integer.MAX_VALUE)
             len = 0;
         return len;
