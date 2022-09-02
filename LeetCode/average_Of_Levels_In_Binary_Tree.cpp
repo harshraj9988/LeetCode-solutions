@@ -56,19 +56,22 @@ private:
                 q.pop();
                 if (node->left)
                 {
-                    sum+=node->left->val;
+                    sum += node->left->val;
                     count++;
                     q.push(node->left);
                 }
                 if (node->right)
                 {
-                    sum+=node->right->val;
+                    sum += node->right->val;
                     count++;
                     q.push(node->right);
                 }
             }
-            sum /= count;
-            arr.push_back(sum);
+            if (count)
+            {
+                sum /= count;
+                arr.push_back(sum);
+            }
         }
     }
 
