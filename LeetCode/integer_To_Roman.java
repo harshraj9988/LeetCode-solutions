@@ -48,7 +48,6 @@ public class integer_To_Roman {
 
         Map<Integer, String> map = new HashMap<>();
         int[] digit = {1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000};
-        //TODO: store them in reverse order
         String[] str = {"I", "VI", "V", "XI", "X", "LX", "L", "CX", "C", "DC", "D", "MC", "M"};
         for(int i=0; i<13; i++){
             map.put(digit[i], str[i]);
@@ -69,12 +68,6 @@ public class integer_To_Roman {
             mul*=10;
             num/=10;
         }
-
         return sb.reverse().toString();
-    }
-
-    public static void main(String[] args) {
-        int num = (new Scanner(System.in)).nextInt();
-        System.out.println(new integer_To_Roman().intToRoman(num));
     }
 }
