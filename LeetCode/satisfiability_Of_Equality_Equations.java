@@ -58,6 +58,4 @@ public class satisfiability_Of_Equality_Equations {
         return parent[x] = findParent(parent[x], parent);
     }
 
-   
-
 }
