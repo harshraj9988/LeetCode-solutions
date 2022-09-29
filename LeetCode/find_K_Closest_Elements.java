@@ -30,46 +30,21 @@ import java.util.*;
 
 class Solution {
     public List<Integer> findClosestElements(int[] arr, int k, int x) {
-        int n = arr.length;
         List<Integer> list = new ArrayList<>();
-        int ind = Arrays.binarySearch(arr, x);
-        if (ind < 0) {
-            ind = (-1 * ind) - 1;
-        }
-        int i = ind - 1;
-        int j = ind;
-        while (k > 0 && i >= 0 && j < n) {
+        int i = 0, j = arr.length - 1;
+        while ((j - i + 1) > k) {
             int left = x - arr[i];
             int right = arr[j] - x;
-            if (left < right) {
-                list.add(arr[i]);
-                i--;
-            } else if (left > right) {
-                list.add(arr[j]);
-                j++;
-            } else {
-                if (arr[i] < arr[j]) {
-                    list.add(arr[i]);
-                    i--;
-                } else {
-                    list.add(arr[j]);
-                    j++;
-                }
+            if(right>left) j--;
+            else if(right<left) i++;
+            else {
+                if(arr[i]>arr[j]) i++;
+                else j--;
             }
-            k--;
         }
-
-        while (k > 0 && i >= 0) {
-            list.add(arr[i]);
-            i--;
-            k--;
+        while (i <= j) {
+            list.add(arr[i++]);
         }
-        while (k > 0 && j < n) {
-            list.add(arr[j]);
-            j++;
-            k--;
-        }
-        Collections.sort(list);
         return list;
     }
 }
