@@ -43,21 +43,19 @@ import java.util.*;
 
 public class minimum_Number_Of_Operations_To_Make_Array_Continuous {
     public int minOperations(int[] nums) {
-        int n = nums.length;
-        int[] arr = getUniqueSortedArray(nums);
-        
+        int totalEle = nums.length;
+        int[] uniqueSortedArray = getUniqueSortedArray(nums);
         int maxCorrEle = Integer.MIN_VALUE;
-        int m = arr.length;
-        for(int i = 0; i<m; i++) {
-            int toFind = arr[i] - n + 1;
-            int ind = Arrays.binarySearch(arr, toFind);
+        int sortedEle = uniqueSortedArray.length;
+        for(int i = 0; i<sortedEle; i++) {
+            int toFind = uniqueSortedArray[i] - totalEle + 1;
+            int ind = Arrays.binarySearch(uniqueSortedArray, toFind);
             if(ind<0){
                 ind = (-1 * ind) - 1;
             }
             maxCorrEle = Math.max(maxCorrEle, i-ind+1);
         }
-
-        return n-maxCorrEle;
+        return totalEle-maxCorrEle;
         
     }
 
