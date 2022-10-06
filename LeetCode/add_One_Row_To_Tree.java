@@ -43,13 +43,5 @@ class Solution {
             dfs(node.right, val, depth - 1);
     }
 
-    public TreeNode addOneRow(TreeNode root, int val, int depth) {
-        if (depth == 1) {
-            TreeNode node = new TreeNode(val);
-            node.left = root;
-            return node;
-        }
-        dfs(root, val, depth-1);
-        return root;
-    }
+   
 }
