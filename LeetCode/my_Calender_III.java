@@ -46,8 +46,8 @@ class MyCalendarThree {
     public int book(int start, int end) {
         map.put(start, map.getOrDefault(start, 0) + 1);
         map.put(end, map.getOrDefault(end, 0) - 1);
-        for(Integer key: map.keySet()){
-            k += map.get(key);
+        for(Integer value: map.values()){
+            k += value;
             maxK = Math.max(maxK, k);
         }
         return maxK;
