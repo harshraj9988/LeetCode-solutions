@@ -54,10 +54,13 @@ class Solution {
                 chars[j] = chars[k];
                 ans++;
                 if (count > 1) {
-                    ans += digitInCount(count);
-                    chars[++j] = (char)((int)('0')+count);
+                    int x = digitInCount(count);
+                    ans += x;
+                    for (int dig : getDigits(x, count)) {
+                        chars[++j] = (char) ((int) ('0') + dig);
+                    }
                 }
-                k=i;
+                k = i;
                 count = 1;
                 j++;
             }
@@ -65,17 +68,34 @@ class Solution {
         ans++;
         chars[j] = chars[k];
         if (count > 1) {
-            ans += digitInCount(count);
-            chars[++j] = (char)((int)('0')+count);
+            int x = digitInCount(count);
+            ans += x;
+            for (int dig : getDigits(x, count)) {
+                chars[++j] = (char) ((int) ('0') + dig);
+            }
         }
         return ans;
     }
 
     private int digitInCount(int count) {
-        if(count<10) return 1;
-        if(count<100) return 2;
-        if(count<1000) return 3;
-        if(count<=2000) return 4;
+        if (count < 10)
+            return 1;
+        if (count < 100)
+            return 2;
+        if (count < 1000)
+            return 3;
+        if (count <= 2000)
+            return 4;
         return 0;
+    }
+
+    private int[] getDigits(int n, int cnt) {
+        int[] digs = new int[n];
+        int i = n - 1;
+        while (i >= 0) {
+            digs[i--] = cnt % 10;
+            cnt /= 10;
+        }
+        return digs;
     }
 }
