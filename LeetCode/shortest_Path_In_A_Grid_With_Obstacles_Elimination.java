@@ -47,6 +47,8 @@ class Solution {
             else
                 return -1;
         }
+
+
         q.add(new Pair(0, 0, 0, k));
         vis[0][0][k] = true;
         while (!q.isEmpty()) {
@@ -74,6 +76,8 @@ class Solution {
 
     private class Pair {
         int x, y, z, k;
+
+
 
         Pair(int x, int y, int z, int k) {
             this.x = x;
