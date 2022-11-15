@@ -96,35 +96,36 @@ class Solution {
                 flag = true;
                 String str = s.substring(i + 1, n);
                 System.out.println(str);
-                x = Math.max(x, 1+recursion(str, str.length()));
+                x = Math.max(x, 1 + recursion(str, str.length()));
             }
         }
-        if(!flag) return 1;
+        if (!flag)
+            return 1;
         return x;
     }
-
 
     private int memoization(String s, int n, int[] dp) {
         if (0 == n) {
             return 1;
         }
-        if(dp[n]!=-1) return dp[n];
+        if (dp[n] != -1)
+            return dp[n];
         int x = 0;
         boolean flag = false;
         for (int i = 0; i < n / 2; i++) {
             if (i + 2 + i <= n && s.substring(0, i + 1).equals(s.substring(i + 1, (i + 2 + i)))) {
                 flag = true;
                 String str = s.substring(i + 1, n);
-                x = Math.max(x, 1+memoization(str, str.length(), dp));
+                x = Math.max(x, 1 + memoization(str, str.length(), dp));
             }
         }
-        if(!flag) return 1;
+        if (!flag)
+            return 1;
         return dp[n] = x;
     }
 
-
     public int deleteString(String s) {
-        int[] dp = new int[s.length()+1];
+        int[] dp = new int[s.length() + 1];
         Arrays.fill(dp, -1);
         return memoization(s, s.length(), dp);
     }
@@ -132,9 +133,47 @@ class Solution {
 
 public class cc {
     public static void main(String[] args) throws Exception {
-       int x = 98;
-       StringBuilder sb = new StringBuilder();
-       sb.append(x);
-       System.out.println(sb.toString());
+        int[] arr = {8, 3, 4, 1};
+        System.out.println(Arrays.stream(arr).max().getAsInt());
+        System.out.println((int)1e9);
+        System.out.println((int)-1e9);
     }
 }
+
+// 1
+// 3
+// 2
+// 3
+// 5
+// 3
+// 5
+// 4
+// 5
+// 4
+// 5
+// 7
+// 5
+// 7
+// 5
+// 7
+// 6
+// 7
+// 6
+// 7
+// 6
+
+// 7
+// 9
+// 7
+// 9
+// 7
+// 9
+// 7
+// 9
+// 8
+// 9
+// 8
+// 9
+// 8
+// 9
+// 8
