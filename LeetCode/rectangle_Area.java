@@ -45,7 +45,7 @@ class Solution {
 
         if (cx2 >= cx1 && cy2 >= cy1)
             areaC = (cx2 - cx1) * (cy2 - cy1);
-        ;
+        
 
         return areaA + areaB - areaC;
     }
