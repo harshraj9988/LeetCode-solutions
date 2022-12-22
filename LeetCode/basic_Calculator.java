@@ -129,4 +129,8 @@ class InfixToPostfix {
             return 2;
         return 0;
     }
+
+    private void f(){
+        Queue<Integer> q = new LinkedList<>();
+    }
 }
