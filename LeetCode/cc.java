@@ -1,107 +1,109 @@
+/**
+
+*/
+
 import java.util.*;
-import java.io.*;
-
-public class cc {
-
-    public boolean isPossible(int n, List<List<Integer>> edges) {
-        ArrayList<HashSet<Integer>> adj = new ArrayList<>();
-        for (int i = 0; i < n; i++)
-            adj.add(new HashSet<>());
-        int[] degree = new int[n];
-        for (List<Integer> edge : edges) {
-            int x = edge.get(0) - 1;
-            int y = edge.get(1) - 1;
-            adj.get(x).add(y);
-            adj.get(y).add(x);
-            degree[x]++;
-            degree[y]++;
+import java.util.Map.Entry;
+class Solution {
+    public List<Integer> topStudents(String[] positive_feedback, String[] negative_feedback, String[] report, int[] student_id, int k) {
+        List<Integer> result = new ArrayList<>();
+        HashSet<String> pos = new HashSet<>();
+        HashSet<String> neg = new HashSet<>();
+        int x = 0;
+        
+        for(String p: positive_feedback) pos.add(p);
+        for(String n: negative_feedback) neg.add(n);
+        HashMap<Integer, Integer> point = new HashMap<>();
+        for(int i: student_id) point.put(i, 0);
+        int n = report.length;
+        for(int i=0; i<n; i++){
+            String[] rats = report[i].split(" ");
+            for(String rat: rats) {
+                if(pos.contains(rat)) point.put(student_id[i], point.get(student_id[i])+3);
+                else if(neg.contains(rat)) point.put(student_id[i], point.get(student_id[i])-1);
+            }  
         }
-        int odds = 0;
-        ArrayList<Integer> temp = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            if (degree[i] % 2 == 1) {
-                if (odds == 4)
-                    return false;
-                temp.add(i);
-                odds++;
-            }
+        int[][] temp = new int[point.size()][2];
+        for(Entry<Integer, Integer> e: point.entrySet()) {
+            temp[x][0] = e.getValue();
+            temp[x++][1] = e.getKey();
         }
-        if(odds == 0) return true;
-        if(!(odds==2 || odds == 4)){
-            return false;
+        Arrays.sort(temp, (a,b)->(b[0]==a[0])?a[1]-b[1]:b[0]-a[0]);
+        for(int[] z: temp) {
+            result.add(z[1]);
+            k--;
+            if(k==0) break;
         }
-        if(odds==2){
-            int a = temp.get(0);
-            int b = temp.get(1);
-            if(adj.get(a).contains(b)){
-                for(int i=0; i<n; i++) {
-                    if(i==a || i==b) continue;
-                    if(!adj.get(a).contains(i) && !adj.get(b).contains(i)) return true;
-                }
-            }else{
-                return true;
-            }
-        }
-        else{
-            int a = temp.get(0);
-            int b = temp.get(1);
-            int c = temp.get(2);
-            int d = temp.get(3);
-
-            return !adj.get(a).contains(b) && !adj.get(c).contains(d) || 
-            !adj.get(a).contains(d) && !adj.get(c).contains(b) || 
-            !adj.get(a).contains(c) && !adj.get(b).contains(d) ;
-
-        }
-
-        return false;
-
+        return result;
     }
 
-    public int[] cycleLengthQueries(int n, int[][] queries) {
-        n = queries.length;
-        int[] ans = new int[n];
-        for (int i = 0; i < n; i++) {
-            ArrayList<Integer> a = temp(queries[i][0]), b = temp(queries[i][1]);
+    public int captureForts(int[] forts) {
+        int ans = 0;
+        int n = forts.length;
 
-            int z = 0;
-            boolean notFound = false;
-            while (z < a.size() && z < b.size()) {
-                if(a.get(z)==b.get(z)) z++;
-                else{
-                    z++;
-                    notFound = true;
-                }
+        for(int i=0; i<n; i++) {
+            int temp = 0;
+            int j = 0;
+            
+            if(forts[i]==1)
+            for( j= i-1; j>=0; j--) {
+                if(forts[j]==1){
+                    temp = 0;
+                    break;
+                }else if(forts[j]==-1) break;
+                temp++;
             }
-            int c = 0;
-            if (notFound)
-                c = a.size() + b.size() - 1;
-            else
-                c = a.size() - z + b.size() - z + 1;
-            ans[i] = c;
+            if(j!=-1)
+            ans = Math.max(temp, ans);
+
+            if(forts[i]==1)
+            for (j = i+1; j<n; j++) {
+                if(forts[j]==1){
+                    temp = 0;
+                    break;
+                }else if(forts[j]==-1) break;
+                temp++;
+            }
+            if(j!=n)
+            ans = Math.max(temp, ans);
+            temp = 0;
         }
+
         return ans;
     }
 
-    private ArrayList<Integer> temp(int n) {
-        ArrayList<Integer> ans = new ArrayList<>();
-        while (n > 0) {
-            ans.add(n);
-            n /= 2;
+    public int minimizeSet(int divisor1, int divisor2, int uniqueCnt1, int uniqueCnt2) {
+        HashSet<Integer> as = new HashSet<>();
+        ArrayList<Integer> al = new ArrayList<>(), bl = new ArrayList<>();
+        int a = 0, b = 0;
+        int ad = 1, bd = 1;
+        if(uniqueCnt1 >= uniqueCnt2) {
+            a = uniqueCnt1;
+            b = uniqueCnt2;
+            ad = divisor1;
+            bd = divisor2;
+        }else if( uniqueCnt2 > uniqueCnt1) {
+            a = uniqueCnt2;
+            b = uniqueCnt1;
+            ad = divisor2;
+            bd = divisor1;
         }
-        int i = 0;
-        int j = ans.size() - 1;
-        while (i < j) {
-            int temp = ans.get(i);
-            ans.set(i, ans.get(j));
-            ans.set(j, temp);
-            i++;
-            j--;
+        for(int i=1; i <= 1e9; i++) {
+            if(i%ad!=0 && al.size()<a) {
+                al.add(i);
+            }else if(i%bd!=0 && bl.size()<b){
+                bl.add(i);
+            }
+            if(al.size()==a && bl.size()==b) break;
         }
-        return ans;
-    }
+        int max = 0;
+        for(Integer i: al) {
+            max = Math.max(i, max);
+        }
+        for(Integer i: bl) {
+            max = Math.max(i, max);
+        }
 
-    public static void main(String[] args) throws IOException {
-
+        return max;
     }
 }
