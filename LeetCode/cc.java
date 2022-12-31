@@ -106,4 +106,54 @@ class Solution {
 
         return max;
     }
+
+    public int takeCharacters(String s, int k) {
+        char[] str = s.toCharArray();
+        int n = str.length;
+        int[][] left = new int[3][n];
+        int[][] right = new int[3][n];
+        int lm = 0, rm = 0;
+        if(n%2==0) {
+            rm = n/2;
+            lm = rm-1;
+        }else{
+            lm = n/2;
+            rm = lm+1;
+        }
+        left[str[0]-'a'][0] = 1;
+        right[str[n-1]-'a'][n-1] = 1;
+        for(int i=1; i<n; i++) {
+            for(int j=0; j<3; j++) {
+                left[j][i] = left[j][i-1];
+            }
+            left[str[i]-'a'][i]++;
+        }
+        for(int i=n-2; i>=0; i--) {
+            int ind = str[i] - 'a';
+            for(int j=0; j<3; j++) {
+                left[j][i] = left[j][i+1];
+            }
+            right[str[i]-'a'][i]++;
+        }
+        
+        if(!ok(left, right, lm, rm, k)) return -1;
+
+        while(lm > 0 && canShift(left, lm-1, lm, k)) lm--;
+        while(rm < n-1 && canShift(right, rm+1, rm, k)) rm++;
+        return lm+1 + (n-rm);
+    }
+
+    private boolean ok(int[][] left, int[][] right, int i, int j, int k) {
+        int a = 0, b = 0, c =0;
+        a=left[0][i] + right[0][j];
+        b=left[1][i] + right[1][j];
+        c=left[2][i] + right[2][j];
+        System.out.println(a+" "+b+" "+c);
+        return a>=k && b>=k && c>=k;
+    }
+
+    private boolean canShift(int[][] arr, int i, int j, int k) {
+
+        return (arr[0][i] >= k || arr[0][i] == arr[0][i]) && (arr[1][i]>=k || arr[1][i]==arr[1][j]) && (arr[2][i]>=k || arr[2][i]==arr[2][j]);
+    }
 }
