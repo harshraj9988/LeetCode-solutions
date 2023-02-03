@@ -25,3 +25,10 @@ public class add_Two_Integers {
         return sum;
     }
 }
+
+class Solution {
+    public int monkeyMove(int n) {
+        double ans = Math.pow(2, n) % ((double)1e9 + 7);
+        return (int) ans;
+    }
+}
