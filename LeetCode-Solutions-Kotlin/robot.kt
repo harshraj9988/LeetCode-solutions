@@ -64,6 +64,7 @@ private fun typist(sample: String) {
         Thread.sleep(5000)
         for (c in sample) {
             Thread.sleep(speed)
+            print(map[c]!!)
             robot.keyPress(map[c]!!)
             robot.keyRelease(map[c]!!)
         }
