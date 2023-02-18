@@ -1,114 +1,119 @@
 import java.util.*;
 import java.io.*;
 
-class Solution {
+public class solution {
+    public int[] vowelStrings(String[] words, int[][] queries) {
+        int q = queries.length;
+        int w = words.length;
+        HashSet<Character> vowels = new HashSet<>(Set.of('a', 'e', 'i', 'o', 'u'));
 
-    public int deleteGreatestValue(int[][] grid) {
-        for (int[] g : grid) {
-            Arrays.sort(g);
+        int[] ans = new int[q];
+        int[] vows = new int[w];
+        int[] ltr = new int[w];
+
+        for (int i = 0; i < w; i++) {
+            if (countVows(words[i], vowels))
+                vows[i] = 1;
         }
-        int m = grid.length;
-        int n = grid[0].length;
-        int ans = 0;
-        for (int j = n - 1; j >= 0; j--) {
-            int temp = 0;
-            for (int i = 0; i < m; i++) {
-                temp = Math.max(grid[i][j], temp);
-            }
-            ans += temp;
+
+        ltr[0] = vows[0];
+
+        for (int i = 1; i < w; i++) {
+            ltr[i] = vows[i] + ltr[i - 1];
         }
+
+        for (int i = 0; i < q; i++) {
+            int l = queries[i][0];
+            int r = queries[i][1];
+
+            int temp = ltr[r];
+            if (l > 0)
+                temp -= ltr[l - 1];
+
+            ans[i] = temp;
+        }
+
         return ans;
     }
 
-    public int longestSquareStreak(int[] nums) {
-        Arrays.sort(nums);
-        int len = 0;
+    private boolean countVows(String word, HashSet<Character> vows) {
+        return vows.contains(word.charAt(0)) && vows.contains(word.charAt(word.length() - 1));
+    }
+
+    public long pickGifts(int[] gifts, int k) {
+        PriorityQueue<Long> pq = new PriorityQueue<>(Collections.reverseOrder());
+        long used = 0;
+        long total = 0;
+        for (int gift : gifts) {
+            total += (long) gift;
+            pq.add((long) gift);
+        }
+        for (int i = 0; i < k && pq.size() > 0; i++) {
+            long x = pq.poll();
+            long sqrt = (long) Math.floor(Math.sqrt(x));
+            used += (x - sqrt);
+            if (sqrt > 0)
+                pq.add((sqrt));
+        }
+        return total - used;
+    }
+
+    public int minCapability(int[] nums, int k) {
         int n = nums.length;
-        for (int i = 0; i < n; i++) {
-            int temp = 1;
-            int ind = Arrays.binarySearch(nums, nums[i] * nums[i]);
-            while (ind >= 0 && ind < n) {
-                ind = Arrays.binarySearch(nums, nums[ind] * nums[ind]);
-                temp++;
-            }
-            len = Math.max(len, temp);
-        }
-        if (len <= 1)
-            len = -1;
-        return len;
+        int[][] dp = new int[n + 1][k + 1];
+        for (int i = 0; i <= n; i++)
+            for (int j = 0; j <= n; j++)
+                dp[i][j] = -1;
+        return recursion(nums, n - 1, 0, k, dp);
     }
 
-    class Allocator {
-        int[] arr;
-        int k = 0;
-        int len;
+    private int recursion(int[] nums, int i, int l, int k, int[][] dp) {
+        if (i < 0 && l >= k)
+            return Integer.MIN_VALUE;
+        if (i < 0 && l < k)
+            return Integer.MAX_VALUE;
 
-        public Allocator(int n) {
-            len = n;
-            arr = new int[n];
-        }
+        if (dp[i][l] != -1)
+            return dp[i][l];
 
-        public int allocate(int size, int mID) {
-            int temp = 0;
-            int ind = -1;
-            for (int i = len - 1; i >= 0; i--) {
-                if (arr[i] != 0) {
-                    if (temp >= size) {
-                        ind = i + 1;
-                    }
-                    temp = 0;
-                } else {
-                    temp++;
-                }
-            }
-            if (temp >= size) {
-                ind = 0;
-            }
-            if(ind == -1) return -1;
-            for(int i=ind; i<ind+size; i++){
-                arr[i] = mID;
-            }
-            return ind;
-        }
+        int pick = Math.max(nums[i], recursion(nums, i - 2, l + 1, k, dp));
+        int notPick = recursion(nums, i - 1, l, k, dp);
 
-        public int free(int mID) {
-            int count = 0;
-            for(int i=0; i<len; i++){
-                if(arr[i]==mID){
-                    count++;
-                    arr[i] = 0;
-                }
-            }
-            return count;
-        }
+        return dp[i][l] = Math.min(pick, notPick);
     }
 
-    public int[] maxPoints(int[][] grid, int[] queries) {
-        int m = grid.length;
-        int n = grid[0].length;
-        int k = queries.length;
-        int[] ans = new int[k];
-        for(int i=0; i<k; i++) {
-            boolean[][] vis = new boolean[m][n];
-            ans[i] = dfs(grid, queries[i],0, 0, vis, m, n);
+    private int tabulation(int[] nums, int k) {
+        
+        int n = nums.length;
+        int[] prevPrev = new int[k + 1];
+        int[] prev = new int[k + 1];
+        for (int i = 0; i < k; i++) {
+            prev[i] = Integer.MAX_VALUE;
+            prevPrev[i] = Integer.MAX_VALUE;
         }
-        return ans;
-    }
 
-    private int dfs(int[][] grid, int q, int i, int j, boolean[][] vis, int m, int n) {
-        int ret = 0;
-        int[] d = new int[]{-1, 0, 1, 0, -1};
-        for(int x=0; x<4; x++){
-            int ni = i+d[x];
-            int nj = j+d[x+1];
-            if(ni>=0 && ni<m && nj>=0 && nj<n && !vis[ni][nj] && grid[ni][nj]<q){
-                vis[ni][nj] = true;
-                ret += (1+dfs(grid, q, ni, nj, vis, m, n));
+        prevPrev[k] = Integer.MIN_VALUE;
+        prev[k] = Integer.MIN_VALUE;
+
+        for (int i = 1; i <= n; i++) {
+            int[] curr = new int[k+1];
+            for (int j = k - 1; j >= 0; j--) {
+
+                int pick = Math.max(nums[i - 1], (i > 1) ? prevPrev[j + 1] : (j+1==k)?Integer.MIN_VALUE: Integer.MAX_VALUE);
+                int notPick = prev[j];
+
+                curr[j] = Math.min(pick, notPick);
             }
+            prevPrev = prev;
+            prev = curr;
         }
-        return ret;
+
+        return prev[0];
     }
 
-    
-
+    public static void main(String[] args) {
+        int[] nums = { 9, 25, 16, 6, 18 };
+        int k = 1;
+        System.out.println((new solution()).minCapability(nums, k));
+    }
 }

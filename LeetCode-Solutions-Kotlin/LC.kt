@@ -1,7 +1,8 @@
-class LC{
 
+class LC {
+    
 }
 
 fun main() {
-    println(LC().toString())
+    val lc = LC()
 }
