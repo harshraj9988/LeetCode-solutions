@@ -10,7 +10,7 @@
         var ans = 0
         while (start < end) {
             val mid = start + (end - start) / 2
-            if (check(nums, k, mid)) {
+            if (valid(nums, k, mid)) {
                 ans = mid
                 end = mid - 1
             } else {
@@ -21,7 +21,7 @@
         return ans
     }
 
-    private fun check(nums: IntArray, k: Int, value: Int): Boolean {
+    private fun valid(nums: IntArray, k: Int, value: Int): Boolean {
         var last = -2
         var elems = 0
         for (i in nums.indices) {

@@ -1,110 +1,105 @@
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class LC {
-    fun findScore(nums: IntArray): Long {
-        val marking = ArrayList<Pair<Int, Int>>()
-        val visited = Array(nums.size) { false }
-        var ans = 0L
 
-        nums.forEachIndexed { index, i ->
-            marking.add(Pair(i, index))
+    private fun isPrime(value: Int): Boolean {
+        var test = 2
+        while (test * test <= value) {
+            if (value % test == 0) return false
+            test++
         }
-        marking.sortWith(Comparator { a, b ->
-            if (a.first == b.first) {
-                a.second.compareTo(b.second)
-            } else {
-                a.first.compareTo(b.first)
-            }
-        })
+        return true
+    }
 
-        for (i in marking.indices) {
-            if (visited[marking[i].second]) continue
-            else {
-                val temp = marking[i].second
-                visited[temp] = true
-                ans += nums[temp]
-                if (temp - 1 >= 0) visited[temp - 1] = true
-                if (temp + 1 < nums.size) visited[temp + 1] = true
-            }
+    fun diagonalPrime(nums: Array<IntArray>): Int {
+        val n = nums.size
+        var ans = 0
+        for (i in 0 until n) {
+            if (nums[i][n - 1 - i] > 1 && isPrime(nums[i][n - 1 - i]))
+                ans = ans.coerceAtLeast(nums[i][n - 1 - i])
+
+            if (nums[i][i] > 1 && isPrime(nums[i][i]))
+                ans = ans.coerceAtLeast(nums[i][i])
+
         }
         return ans
     }
 
-    fun maximizeGreatness(nums: IntArray): Int {
-        Arrays.sort(nums)
-        var first = 0
-        var second = 0
+    fun distance(nums: IntArray): LongArray {
+        val prefixSum = HashMap<Int, ArrayList<Long>>()
+        val intIndex = HashMap<Int, ArrayList<Int>>()
         val n = nums.size
-        while (second < n) {
-            if (nums[first] == nums[second]) second++
-            else {
-                first++
-                second++
+        val result = LongArray(n)
+        for (i in 0 until n) {
+            if (!intIndex.containsKey(nums[i])) {
+                prefixSum[nums[i]] = ArrayList()
+                intIndex[nums[i]] = ArrayList()
             }
+            intIndex[nums[i]]!!.add(i)
+            val size = prefixSum[nums[i]]!!.size
+            if (size == 0) prefixSum[nums[i]]!!.add(i.toLong())
+            else prefixSum[nums[i]]!!.add(i.toLong() + prefixSum[nums[i]]!![size - 1])
         }
-        return first
+
+        for (i in 0 until n) {
+            val index = intIndex[nums[i]]!!
+            if (index.size == 1) continue
+            val prefix = prefixSum[nums[i]]!!
+            val temp = index.binarySearch(i)
+            var sum = 0L
+            if (temp > 0)
+                sum += i.toLong() * temp - prefix[temp - 1]
+            if (temp < index.size - 1)
+                sum += prefix[index.size - 1] - prefix[temp] - i.toLong() * (index.size - 1 - temp)
+            result[i] = sum
+        }
+        return result
     }
 
-    fun distMoney(money: Int, children: Int): Int {
-        var remMoney = money - children
-        var kidsMoney = Array(children) { 1 }
-        if (remMoney < 0) return -1
-        for (i in 0 until children) {
-            if (i == children - 1) kidsMoney[i] += remMoney
-            else if (remMoney >= 7) {
-                kidsMoney[i] += 7
-                remMoney -= 7
-            } else {
-                kidsMoney[i] += remMoney
-                remMoney = 0
-                break
+
+    fun minimizeMax(nums: IntArray, p: Int): Int {
+        var low = 0
+        var high = 1e9.toInt()
+        var result = 0
+        Arrays.sort(nums)
+
+        while(low <= high) {
+            val mid = low + (high - low) / 2
+            if(valid(nums, p, mid)) {
+                result = mid
+                high = mid - 1
+            }else{
+                low = mid + 1
             }
         }
-        for (i in 0 until children) {
-            return if (kidsMoney[i] == 8) continue
-            else if (kidsMoney[i] == 4) {
-                if (i == children - 1) {
-                    i - 1
-                } else {
-                    i
-                }
-            } else {
-                i
-            }
-        }
-        return kidsMoney.size
+        return result
     }
 
-    fun repairCars(rr: IntArray, cars: Int): Long {
-        Arrays.sort(rr)
-        val ranks = rr.map { it.toLong() }
-        val n = ranks.size
-        val mul = Array(n) { (cars / n).toLong() }
-        mul[n - 1] += (cars % n).toLong()
-        val time = LongArray(n)
-        for (i in time.indices) {
-            time[i] = ranks[i]* mul[i] * mul[i]
-        }
-        var start = 0
-        var end = n - 1
-        while (start < end) {
-            val startTime = ranks[start] * (mul[start] + 1) * (mul[start] + 1)
-            val endTime = ranks[end] * (mul[end] - 1) * (mul[end] - 1)
-            if (Math.max(startTime, endTime) < Math.max(time[start], time[end])) {
-                time[start] = startTime
-                time[end] = endTime
-                mul[start]++
-                mul[end]--
-            } else {
-                end -= 1
+    private fun valid(nums: IntArray, p: Int, mid: Int) : Boolean {
+        var ind = 0
+        var temp = p
+        while(ind < nums.size-1) {
+            if(nums[ind+1] - nums[ind] <= mid){
+                ind += 2
+                temp--
+            }else{
+                ind++
             }
+            if(temp == 0) return true
         }
-        var solve = 0L
-        for (x in time) solve = Math.max(solve, x)
-        return solve
+        return false
     }
+
 }
 
 fun main() {
     val lc = LC()
+    val arr = intArrayOf(10,1,2,7,1,3)
+    val p = 2
+    println(lc.minimizeMax(arr, p))
+
 }
+
+// 883

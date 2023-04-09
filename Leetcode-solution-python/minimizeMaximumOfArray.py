@@ -1,3 +1,4 @@
+import math
 from typing import List
 
 
@@ -21,4 +22,13 @@ class Solution:
                 maxi = mid - 1
             else:
                 mini = mid + 1
+        return ans
+
+
+class Solution2:
+    def minimizeArrayValue(self, nums: List[int]) -> int:
+        ans = pre_sum = 0
+        for i in range(len(nums)):
+            pre_sum += nums[i]
+            ans = max(ans, math.ceil(pre_sum / (i + 1)))
         return ans
