@@ -1,105 +1,128 @@
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-
 class LC {
-
-    private fun isPrime(value: Int): Boolean {
-        var test = 2
-        while (test * test <= value) {
-            if (value % test == 0) return false
-            test++
+    fun addMinimum(word: String): Int {
+        val n = word.length
+        var lastChar = 'c'
+        var index = 0
+        var ans = 0
+        while (index < n) {
+            when (lastChar) {
+                'c' -> {
+                    if (word[index] == 'a') {
+                        index++
+                    } else {
+                        ans++
+                    }
+                    lastChar = 'a'
+                }
+                'a' -> {
+                    if (word[index] == 'b') {
+                        index++
+                    } else {
+                        ans++
+                    }
+                    lastChar = 'b'
+                }
+                else -> {
+                    if (word[index] == 'c') {
+                        index++
+                    } else {
+                        ans++
+                    }
+                    lastChar = 'c'
+                }
+            }
         }
-        return true
+
+
+        if (lastChar == 'a') ans += 2
+        else if (lastChar == 'b') ans++
+
+        return ans
     }
 
-    fun diagonalPrime(nums: Array<IntArray>): Int {
-        val n = nums.size
-        var ans = 0
-        for (i in 0 until n) {
-            if (nums[i][n - 1 - i] > 1 && isPrime(nums[i][n - 1 - i]))
-                ans = ans.coerceAtLeast(nums[i][n - 1 - i])
+    fun maxDivScore(nums: IntArray, divisors: IntArray): Int {
+        var divisibles = 0
+        var answer = Int.MAX_VALUE
+        for(div in divisors){
+            var temporaryCount = 0
+            for(num in nums) {
+                if(num%div == 0) {
+                    temporaryCount++
+                }
+            }
+            if(temporaryCount > divisibles){
+                divisibles = temporaryCount
+                answer = div
+            }else if(temporaryCount == divisibles) {
+                answer = answer.coerceAtMost(div)
+            }
+        }
+        return answer
+    }
 
-            if (nums[i][i] > 1 && isPrime(nums[i][i]))
-                ans = ans.coerceAtLeast(nums[i][i])
-
+    fun rowAndMaximumOnes(mat: Array<IntArray>): IntArray {
+        val ans = IntArray(2)
+        for(i in mat.indices) {
+            val temp = mat[i].count { x -> x == 1 }
+            if(temp > ans[1]){
+                ans[0] = i
+                ans[1] = temp
+            }
         }
         return ans
     }
 
-    fun distance(nums: IntArray): LongArray {
-        val prefixSum = HashMap<Int, ArrayList<Long>>()
-        val intIndex = HashMap<Int, ArrayList<Int>>()
-        val n = nums.size
-        val result = LongArray(n)
-        for (i in 0 until n) {
-            if (!intIndex.containsKey(nums[i])) {
-                prefixSum[nums[i]] = ArrayList()
-                intIndex[nums[i]] = ArrayList()
-            }
-            intIndex[nums[i]]!!.add(i)
-            val size = prefixSum[nums[i]]!!.size
-            if (size == 0) prefixSum[nums[i]]!!.add(i.toLong())
-            else prefixSum[nums[i]]!!.add(i.toLong() + prefixSum[nums[i]]!![size - 1])
+
+    private lateinit var touched: Array<Boolean>
+
+    private fun dfs(adj: ArrayList<ArrayList<Int>>, vis: Array<Boolean>, price: IntArray, node: Int, target: Int): Int {
+        touched[node] = true
+        if(node == target) {
+            return price[target]
         }
+        var temp = 1e8.toInt()
 
-        for (i in 0 until n) {
-            val index = intIndex[nums[i]]!!
-            if (index.size == 1) continue
-            val prefix = prefixSum[nums[i]]!!
-            val temp = index.binarySearch(i)
-            var sum = 0L
-            if (temp > 0)
-                sum += i.toLong() * temp - prefix[temp - 1]
-            if (temp < index.size - 1)
-                sum += prefix[index.size - 1] - prefix[temp] - i.toLong() * (index.size - 1 - temp)
-            result[i] = sum
-        }
-        return result
-    }
-
-
-    fun minimizeMax(nums: IntArray, p: Int): Int {
-        var low = 0
-        var high = 1e9.toInt()
-        var result = 0
-        Arrays.sort(nums)
-
-        while(low <= high) {
-            val mid = low + (high - low) / 2
-            if(valid(nums, p, mid)) {
-                result = mid
-                high = mid - 1
-            }else{
-                low = mid + 1
+        for(next in adj[node]) {
+            if(!vis[next]){
+                vis[next] = true
+                temp = temp.coerceAtMost( price[node] + dfs(adj, vis, price, next, target) )
             }
         }
-        return result
+
+        return temp
     }
 
-    private fun valid(nums: IntArray, p: Int, mid: Int) : Boolean {
-        var ind = 0
-        var temp = p
-        while(ind < nums.size-1) {
-            if(nums[ind+1] - nums[ind] <= mid){
-                ind += 2
-                temp--
-            }else{
-                ind++
-            }
-            if(temp == 0) return true
+    fun minimumTotalPrice(n: Int, edges: Array<IntArray>, price: IntArray, trips: Array<IntArray>): Int {
+        touched = Array(n) { false }
+        val adj = ArrayList<ArrayList<Int>>()
+        repeat(n){
+            adj.add(ArrayList())
         }
-        return false
-    }
+        for(edge in edges) {
+            adj[edge[0]].add(edge[1])
+            adj[edge[1]].add(edge[0])
+        }
+        var ans = 0
+        for(trip in trips) {
+            val vis = Array(n) { false }
+            vis[trip[0]] = true
+            ans += (dfs(adj, vis, price, trip[0], trip[1]))
+        }
 
+
+
+        for(trip in trips) {
+            val vis = Array(n) { false }
+            vis[trip[0]] = true
+            ans += (dfs(adj, vis, price, trip[0], trip[1]))
+        }
+        return ans
+    }
 }
 
 fun main() {
     val lc = LC()
-    val arr = intArrayOf(10,1,2,7,1,3)
-    val p = 2
-    println(lc.minimizeMax(arr, p))
+    var a = "abc"
+    println(lc.addMinimum(a))
 
 }
-
-// 883

@@ -2,7 +2,7 @@
         return spaceOptimization(n)
     }
 
-    val mod = (1e9).toLong() + 7.toLong()
+    private val mod = (1e9).toLong() + 7.toLong()
 
     fun recursion(i: Int, n: Int, gap: Boolean): Long {
         if (i > n) return 0
