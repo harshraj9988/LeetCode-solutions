@@ -1,13 +1,13 @@
     import java.util.LinkedList
     import java.util.Queue
 
-    fun findParent(u: Int, parents: IntArray): Int {
+    private fun findParent(u: Int, parents: IntArray): Int {
         if (parents[u] == u) return u
         parents[u] = findParent(parents[u], parents)
         return parents[u]
     }
 
-    fun union(u: Int, v: Int, parents: IntArray, ranks: IntArray) {
+    private fun union(u: Int, v: Int, parents: IntArray, ranks: IntArray) {
         val parU = findParent(u, parents)
         val parV = findParent(v, parents)
         if (parU == parV) {
@@ -22,7 +22,7 @@
         }
     }
 
-    fun solveUsingUnionFind(n: Int, edges: Array<IntArray>, source: Int, destination: Int): Boolean {
+    private fun solveUsingUnionFind(n: Int, edges: Array<IntArray>, source: Int, destination: Int): Boolean {
         val parents = IntArray(n)
         val ranks = IntArray(n)
         for (i in 0 until n) {
@@ -34,7 +34,7 @@
         return findParent(source, parents) == findParent(destination, parents)
     }
 
-    fun solveUsingBFS(n: Int, edges: Array<IntArray>, source: Int, destination: Int): Boolean {
+    private fun solveUsingBFS(n: Int, edges: Array<IntArray>, source: Int, destination: Int): Boolean {
         val adj = ArrayList<ArrayList<Int>>()
         for (i in 0 until n) {
             adj.add(ArrayList<Int>())
