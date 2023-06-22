@@ -1,160 +1,90 @@
 import java.util.*
+import kotlin.collections.HashMap
 
 class LC {
-     private fun check(num: Int, remainingNum: Int, sum: Int) : Boolean {
-        if(sum + remainingNum == num) {
-            return true
-        }
-        if(remainingNum == 0) {
-            return false
-        }
-        var ans = false
-        var add = 0
-        var temp = remainingNum
-         var multp = 1
-        while(temp>0) {
-            add += (temp % 10) * multp
-            multp *= 10
-            temp /= 10
-            ans = ans || check(num, temp, sum+add)
-        }
-
-        return ans
-    }
-
-    fun punishmentNumber(n: Int): Int {
-        var ans = 0
-        for(i in 1..n) {
-            val x = i*i
-            if(check(i, x, 0)) {
-                ans += x
+    fun distanceTraveled(mainTank: Int, additionalTank: Int): Int {
+        var fuel = mainTank
+        var extraFuel = additionalTank
+        var totalKms = 0
+        while (fuel >= 5) {
+            totalKms += 50
+            fuel -= 5
+            if (extraFuel > 0) {
+                fuel++
+                extraFuel--
             }
         }
-        return ans
+        totalKms += fuel * 10
+        return totalKms
     }
 
-    fun minLength(s: String): Int {
-        val stack = Stack<Char>()
-        s.forEach {
-            if (!stack.isEmpty() && ((stack.peek() == 'A' && it == 'B') || ( stack.peek() == 'C' && it == 'D' ))) {
-                stack.pop()
-            } else {
-                stack.add(it)
-            }
+    fun findValueOfPartition(nums: IntArray): Int {
+        nums.sort()
+        var mini = Int.MAX_VALUE
+        for (i in 0 until nums.lastIndex) {
+            mini = mini.coerceAtMost(nums[i + 1] - nums[i])
         }
-        return stack.size
+        return mini
     }
 
-    fun makeSmallestPalindrome(s: String): String {
-        val newS = s.toCharArray()
-        var first = 0
-        var last = newS.lastIndex
-        while(first < last) {
-            if(newS[first] != newS[last]) {
-                if(newS[first] > newS[last]) {
-                    newS[first] = newS[last]
-                }else{
-                    newS[last] = newS[first]
-                }
-            }
-            first++
-            last--
+    private lateinit var map: HashMap<Int, ArrayList<Int>>
+    private lateinit var dp : Array<LongArray>
+    fun specialPerm(nums: IntArray): Int {
+        val done = BooleanArray(nums.size) { false }
+        map = HashMap()
+        map[-1] = ArrayList()
+        for (i in nums.indices) {
+            map[-1]!!.add(i)
+            map[i] = ArrayList()
         }
-        return String(newS)
-    }
-
-    private var pathArray = Array<IntArray>(0){ IntArray(0) }
-    private var sum = 0
-    private var x = 0
-
-
-    fun modifiedGraphEdges(n: Int, edges: Array<IntArray>, source: Int, destination: Int, target: Int): Array<IntArray> {
-        val adj = createAdjList(n, edges)
-        val vis = Array(n) { false }
-
-        dfs(adj, source, destination, target, Stack<IntArray>(), 0, 0, vis)
-
-        if(x == 0 && sum != target) {
-            return emptyArray()
-        }
-        if(x != 0){
-            sum = target - sum
-            pathArray.forEach {
-                if (x> 1 && it[2] < 0) {
-                    it[2] = 1
-                    sum--
-                    x--
-                }else if(x == 1 && it[2] < 0){
-                    it[2] = sum
-                    x--
+        for (i in nums.indices) {
+            for (j in nums.indices) {
+                if (i == j) continue
+                if (nums[i] % nums[j] == 0 || nums[j] % nums[i] == 0) {
+                    map[i]!!.add(j)
+                    map[j]!!.add(i)
                 }
             }
         }
 
-        val arr = Array(n){IntArray(n){-2} }
-        edges.forEach {
-            arr[it[0]][it[1]] = it[2]
+        dp = Array(nums.size+1) { LongArray(nums.size + 2) {-1L} }
+
+        for(i in map.keys) {
+            println("$i ${map[i]!!.toString()}")
         }
 
-        pathArray.forEach {
-            arr[it[0]][it[1]] = it[2]
-            arr[it[1]][it[0]] = it[2]
-        }
-
-        for(i in edges.indices) {
-            edges[i][2] = arr[edges[i][0]][edges[i][1]]
-        }
-
-
-        return edges
+        return rec(nums, done, 0).toInt()
     }
-
-    private fun createAdjList(n: Int, edges: Array<IntArray>) : ArrayList<ArrayList<Pair<Int, Int>>> {
-        val ans = ArrayList<ArrayList<Pair<Int, Int>>>()
-        repeat(n) {
-            ans.add(ArrayList())
+    private val mod = 1e9.toLong() + 7L
+    private fun rec(nums: IntArray, done: BooleanArray, temp: Int, prev: Int = -1): Long {
+        if (temp == nums.size) {
+            return 1
         }
-        edges.forEach{
-            ans[it[0]].add(Pair(it[1], it[2]))
-            ans[it[1]].add(Pair(it[0], it[2]))
-        }
-        return ans
-    }
-
-    private fun dfs(
-        adj: ArrayList<ArrayList<Pair<Int, Int>>>,
-        node: Int,
-        destination: Int,
-        target: Int,
-        path: Stack<IntArray>,
-        sum: Int,
-        x: Int,
-        vis: Array<Boolean>
-    ) {
-        if(node == destination) {
-            if(sum + x <= target) {
-                pathArray = Array(path.size) { IntArray(3) }
-                path.forEachIndexed { i, z ->
-                    pathArray[i] = path[i]
-                }
-                this.sum = sum
-                this.x = x
+        if(dp[temp][prev+1] != -1L) return dp[temp][prev+1]
+        var count = 0L
+        for (i in map[prev]!!) {
+            if (!done[i]) {
+                done[i] = true
+                count = (count + (rec(nums, done, temp + 1, i)%mod))%mod
+                done[i] = false
             }
         }
-        vis[node] = true
-        for(next in adj[node]) {
-            if(vis[next.first]) continue
-            path.add(intArrayOf(node, next.first, next.second))
-            var a = next.second
-            var b = 0
-            if(a == -1) {
-                a = 0
-                b = 1
-            }
-            dfs(adj, next.first, destination, target, path, sum+a, x+b, vis )
-            path.pop()
+        dp[temp][prev+1] = count
+        return count
+    }
+
+    fun paintWalls(cost: IntArray, time: IntArray): Int {
+        return solve(cost, time, 0, cost.size, 0)
+    }
+
+    private fun solve(cost: IntArray, time: IntArray, i: Int, n: Int, busy: Int): Int {
+        if(i == n) return 0
+        if(busy > 0) {
+            return solve(cost, time, i+1, n,busy-1)
+        }else{
+            return cost[i] + solve(cost, time, i+1, n, time[i])
         }
-        vis[node]=false    }
+    }
 }
 
 fun main() {
