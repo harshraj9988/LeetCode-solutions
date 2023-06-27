@@ -1,93 +1,102 @@
 import java.util.*
-import kotlin.collections.HashMap
+import kotlin.collections.ArrayList
 
 class LC {
-    fun distanceTraveled(mainTank: Int, additionalTank: Int): Int {
-        var fuel = mainTank
-        var extraFuel = additionalTank
-        var totalKms = 0
-        while (fuel >= 5) {
-            totalKms += 50
-            fuel -= 5
-            if (extraFuel > 0) {
-                fuel++
-                extraFuel--
+
+    fun countBeautifulPairs(nums: IntArray): Int {
+        var ans = 0
+        for (i in nums.indices) {
+            for (j in i + 1 until nums.size) {
+                var x = nums[i]
+                while (x >= 10) x /= 10
+                if (isCoPrime(Math.max(x, nums[j] % 10), Math.min(x, nums[j] % 10)) == 1) {
+                    ++ans
+                }
             }
         }
-        totalKms += fuel * 10
-        return totalKms
+        return ans
     }
 
-    fun findValueOfPartition(nums: IntArray): Int {
-        nums.sort()
-        var mini = Int.MAX_VALUE
-        for (i in 0 until nums.lastIndex) {
-            mini = mini.coerceAtMost(nums[i + 1] - nums[i])
-        }
-        return mini
+    private fun isCoPrime(x: Int, y: Int): Int {
+        if (y == 0) return x
+        return isCoPrime(y, x % y)
     }
 
-    private lateinit var map: HashMap<Int, ArrayList<Int>>
-    private lateinit var dp : Array<LongArray>
-    fun specialPerm(nums: IntArray): Int {
-        val done = BooleanArray(nums.size) { false }
-        map = HashMap()
-        map[-1] = ArrayList()
-        for (i in nums.indices) {
-            map[-1]!!.add(i)
-            map[i] = ArrayList()
-        }
-        for (i in nums.indices) {
-            for (j in nums.indices) {
-                if (i == j) continue
-                if (nums[i] % nums[j] == 0 || nums[j] % nums[i] == 0) {
-                    map[i]!!.add(j)
-                    map[j]!!.add(i)
+    fun numberOfGoodSubarraySplits(nums: IntArray): Int {
+        var subLengthOf0s = 0L
+        var foundOne = false
+        val subLengths = ArrayList<Long>()
+
+        var ways = 1L
+        val mod = 1e9.toLong() + 7L
+
+        for (i in nums.lastIndex downTo 0) {
+            if (nums[i] == 1) foundOne = true
+            if (foundOne) {
+                if (nums[i] == 0) {
+                    subLengthOf0s++
+                } else {
+                    if (subLengthOf0s > 0L) subLengths.add(subLengthOf0s + 1)
+                    subLengthOf0s = 0
                 }
             }
         }
 
-        dp = Array(nums.size+1) { LongArray(nums.size + 2) {-1L} }
-
-        for(i in map.keys) {
-            println("$i ${map[i]!!.toString()}")
+        for (i in subLengths) {
+            ways = (ways * i) % mod
         }
 
-        return rec(nums, done, 0).toInt()
+        return if (foundOne) ways.toInt() else 0
     }
-    private val mod = 1e9.toLong() + 7L
-    private fun rec(nums: IntArray, done: BooleanArray, temp: Int, prev: Int = -1): Long {
-        if (temp == nums.size) {
-            return 1
+
+    private class DataOfRobots(val pos: Int, val heal: Int, val dir: Char, val i: Int)
+
+    fun survivedRobotsHealths(positions: IntArray, healths: IntArray, directions: String): List<Int> {
+        val dataOfRobots = Array(positions.size) { DataOfRobots(0, 0, 'a', 0) }
+        val requiredList = ArrayList<DataOfRobots>()
+
+        for (i in positions.indices) {
+            dataOfRobots[i] = DataOfRobots(positions[i], healths[i], directions[i], i)
         }
-        if(dp[temp][prev+1] != -1L) return dp[temp][prev+1]
-        var count = 0L
-        for (i in map[prev]!!) {
-            if (!done[i]) {
-                done[i] = true
-                count = (count + (rec(nums, done, temp + 1, i)%mod))%mod
-                done[i] = false
+        Arrays.sort(dataOfRobots) { a, b ->
+            a.pos.compareTo(b.pos)
+        }
+        val stackOfData = Stack<DataOfRobots>()
+        for (x in dataOfRobots) {
+            if (stackOfData.isEmpty()) stackOfData.add(x)
+            else {
+                if (stackOfData.peek().dir == 'R' && x.dir == 'L') {
+                    var z = x
+                    while (stackOfData.isNotEmpty() && stackOfData.peek().dir == 'R' && stackOfData.peek().heal < z.heal) {
+                        z = DataOfRobots(z.pos, z.heal - 1, z.dir, z.i)
+                        stackOfData.pop()
+                    }
+                    if (stackOfData.isEmpty() || stackOfData.peek().dir == 'L') stackOfData.add(z)
+                    else if (stackOfData.peek().heal > z.heal) {
+                        val y = stackOfData.pop()
+                        stackOfData.add(DataOfRobots(y.pos, y.heal - 1, y.dir, y.i))
+                    } else if (stackOfData.peek().heal == z.heal) {
+                        stackOfData.pop()
+                    }
+                } else {
+                    stackOfData.add(x)
+                }
             }
         }
-        dp[temp][prev+1] = count
-        return count
-    }
-
-    fun paintWalls(cost: IntArray, time: IntArray): Int {
-        return solve(cost, time, 0, cost.size, 0)
-    }
-
-    private fun solve(cost: IntArray, time: IntArray, i: Int, n: Int, busy: Int): Int {
-        if(i == n) return 0
-        if(busy > 0) {
-            return solve(cost, time, i+1, n,busy-1)
-        }else{
-            return cost[i] + solve(cost, time, i+1, n, time[i])
+        stackOfData.forEach {
+            requiredList.add(it)
         }
+        Collections.sort(requiredList) { a, b ->
+            a.i.compareTo(b.i)
+        }
+        val ans = requiredList.map { it.heal }
+        return ans as ArrayList<Int>
     }
 }
 
-fun main() {
-    val lc = LC()
+    fun main() {
+        val lc = LC()
+        val nums = intArrayOf(0, 1, 0, 0, 1)
+        println(lc.numberOfGoodSubarraySplits(nums))
+    }
 
-}

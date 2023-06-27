@@ -1,5 +1,3 @@
-import jdk.internal.org.jline.utils.Colors.s
-
     fun summaryRanges(nums: IntArray): List<String> {
         val ans = ArrayList<String>()
         var i = 0
