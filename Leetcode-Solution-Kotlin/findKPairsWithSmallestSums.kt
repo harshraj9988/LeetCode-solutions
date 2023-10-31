@@ -1,3 +1,6 @@
+import java.util.*
+import kotlin.collections.ArrayList
+
 fun kSmallestPairs(nums1: IntArray, nums2: IntArray, k: Int): List<List<Int>> {
     val ans = ArrayList<ArrayList<Int>>()
     val pq = PriorityQueue<Pair<Int, Int>> { a, b -> a.first.compareTo(b.first) }
